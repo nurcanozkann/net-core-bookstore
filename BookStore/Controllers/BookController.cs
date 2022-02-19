@@ -2,9 +2,11 @@
 using BookStore.BookOperations.CreateBook;
 using BookStore.BookOperations.DeleteBook;
 using BookStore.BookOperations.GetBook;
+using BookStore.BookOperations.GetBookDetail;
 using BookStore.BookOperations.GetBooks;
 using BookStore.BookOperations.UpdateBook;
 using BookStore.DBOperations;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -44,6 +46,8 @@ namespace BookStore.Controllers
             {
                 GetBookDetailQuery query = new GetBookDetailQuery(_context, _mapper);
                 query.BookId = id;
+                GetBookDetailQueryValidator validator = new GetBookDetailQueryValidator();
+                validator.ValidateAndThrow(query);
                 result = query.Handle();
             }
             catch (Exception ex)
@@ -61,6 +65,8 @@ namespace BookStore.Controllers
             try
             {
                 command.model = newBook;
+                CreateBookCommandValidator validator = new CreateBookCommandValidator();
+                validator.ValidateAndThrow(command);
                 command.Handle();
             }
             catch (Exception ex)
@@ -79,6 +85,8 @@ namespace BookStore.Controllers
                 UpdateBookCommand updateBook = new UpdateBookCommand(_context);
                 updateBook.BookId = id;
                 updateBook.Model = updatedBook;
+                UpdateBookCommandValidator validator = new UpdateBookCommandValidator();
+                validator.ValidateAndThrow(updateBook);
                 updateBook.Handle();
             }
             catch (Exception ex)
@@ -97,6 +105,8 @@ namespace BookStore.Controllers
             {
                 DeleteBookCommand deleteBookCommand = new DeleteBookCommand(_context);
                 deleteBookCommand.BookId = id;
+                DeleteBookCommandValidator validator = new DeleteBookCommandValidator();
+                validator.ValidateAndThrow(deleteBookCommand);
                 deleteBookCommand.Handle();
             }
             catch (Exception ex)
